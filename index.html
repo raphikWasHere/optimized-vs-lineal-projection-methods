@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script>
+      var r = document.querySelector(':root');
+      function cargarImagen() {
+        //calcula la anchura y la altura del objeto "anaglyph"
+        r.style.setProperty('--anaglyph-width', document.getElementById('invisible').naturalWidth/2+'px' );
+        r.style.setProperty('--anaglyph-height', document.getElementById('invisible').naturalHeight+'px' );
+        //carga la imagen
+        r.style.setProperty('--anaglyph-image', "url("+document.getElementById('invisible').src+")" );
+      }
+    </script>
+    <style>
+      :root { --anaglyph-width; --anaglyph-height; --anaglyph-image; }
+      .anaglyph { position: relative; display: inline-block; overflow: hidden; width: var(--anaglyph-width); height: var(--anaglyph-height); }
+      .glyph { background-image: var(--anaglyph-image); position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; mix-blend-mode: screen;}
+      .left {  background-position: left 0; }
+      .right { background-position: right 0; }
+    </style>
+  </head>
+
+  <body>
+    <!-- ========== TRUCO PARA FORZAR LA CARGA DE LA IMAGEN ====== -->
+    <img id="invisible" style="display: none" onload = "cargarImagen()">
+    <script>document.getElementById('invisible').src = 'cherries.jpeg'</script>
+
+    <!-- ========== EL TEXTO DE LA PÁGINA EMPIEZA AQUÍ =========== -->
+    <h1>Optimized vs. Lineal Projection anaglyph methods</h1>
+    <h2>Yet another anaglyph method comparison</h2>
+    <p>This is to generate a pair of anaglyphs following two of the methods exposed by Vu M. Tran on his thesis 
+<a href="https://ruor.uottawa.ca/bitstream/10393/27189/1/MR14962.PDF">New methods for rendering of anaglyphs stereoscopic images on CRT and photo-quality ink-jet printers</a>.
+    <p>Anaglyphs here are built on the fly using HTML5, CSS, JavaScript and some SVG filters to implement the methods.
+    <p><p>Type a link in the box below and click the button <i>Anaglyph it!</i>
+    <p><input type="text" id="url-image" size="75%" value="https://github.com/raphikWasHere/optimized-vs-lineal-proyection-methods/blob/main/cherries.jpeg?raw=true">
+    <button onclick="document.getElementById('invisible').src = document.getElementById('url-image').value">Anaglyph it!</button>
+    </br><small>Thanks to Wojtek Rychlik whose picture was borrowed whithout permission from <a href="http://pikespeakphoto.com">pikespeakphoto.com</a>.</small>
+    </br><small>The code of this page is on repository <a href="https://github.com/raphikWasHere/optimized-vs-lineal-proyection-methods">github.com/raphikWasHere/optimized-vs-lineal-proyection-methods</a></small>
+
+    <!-- ========== OPTIMIZED ANAGLYPH =========================== -->
+    <p><b> Optimized Anaglyph</b></br>
+    <object class="anaglyph">
+      <img class="left glyph" style="filter: url(#leftOptimized); ">
+      <img class="right glyph" style="filter: url(#rightOptimized) url(#gammaRedChannel); ">
+    </object>
+
+    <svg width=0 height=0>
+      <filter id="leftOptimized"><feColorMatrix type="matrix"
+       values="0.000 0.700 0.300 0 0
+               0.000 0.000 0.000 0 0
+               0.000 0.000 0.000 0 0
+               0.000 0.000 0.000 1 0" />
+      </filter>
+      <filter id="rightOptimized"><feColorMatrix type="matrix"
+       values="0.000 0.000 0.000 0 0
+               0.000 1.000 0.000 0 0
+               0.000 0.000 1.000 0 0
+               0.000 0.000 0.000 1 0" />
+      </filter>
+      <filter id="gammaRedChannel">
+        <feComponentTransfer>
+          <feFuncR type="gamma" amplitude="1.5"></feFuncR>
+          <feFuncG type="gamma" amplitude="1.5"></feFuncG>
+          <feFuncB type="gamma" amplitude="1.5"></feFuncB>
+        </feComponentTransfer>
+      </filter>
+    </svg>
+
+    <!-- ========== Linear Projection Method ANAGLYPH ============ -->
+    <p><b> Linear Projection Anaglyph</b></br>
+    <object class="anaglyph">
+      <img class="left glyph" style="filter: url(#leftLinearProjection); ">
+      <img class="right glyph" style="filter: url(#rightLinearProjection); ">
+    </object>
+
+    <svg width=0 height=0>
+      <filter id="leftLinearProjection"><feColorMatrix type="matrix"
+       values="+0.3224 +0.4951 +0.2534 0 0
+               -0.0436 -0.0616 -0.0460 0 0
+               -0.0393 -0.0606 +0.0017 0 0
+                0.0000  0.0000  0.0000 1 0" />
+      </filter>
+      <filter id="rightLinearProjection"><feColorMatrix type="matrix"
+       values="-0.0121 -0.0472 -0.0115 0 0
+               +0.2847 +0.8588 +0.0077 0 0
+               -0.0009 -0.0614 +1.1605 0 0
+                0.0000  0.0000  0.0000 1 0" />
+      </filter>
+    </svg>
+
+    <p><small>:P 2023 raphik</small>
+    <p>
+   </body>
+</html>
+
+
+
